@@ -1,0 +1,87 @@
+import { useEffect, useRef, useState } from "react";
+import { Search } from "lucide-react";
+import quotes from "@/data/quotes";
+
+export default function SearchBar({ onClose, onSelectQuote }) {
+  const inputRef = useRef(null);
+  const containerRef = useRef(null);
+  const [mounted, setMounted] = useState(false);
+  const [closing, setClosing] = useState(false);
+  const [query, setQuery] = useState("");
+
+  useEffect(() => {
+    const timeout = setTimeout(() => setMounted(true), 10);
+    inputRef.current?.focus();
+    return () => clearTimeout(timeout);
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (!containerRef.current?.contains(e.target)) {
+        setClosing(true);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    if (closing) {
+      const timeout = setTimeout(onClose, 300);
+      return () => clearTimeout(timeout);
+    }
+  }, [closing, onClose]);
+
+  const filtered = quotes
+    .map((q, i) => ({ ...q, index: i }))
+    .filter((q) => q.text.toLowerCase().includes(query.toLowerCase()));
+
+  return (
+    <div
+      ref={containerRef}
+      className={`
+        fixed top-6 left-1/2 -translate-x-1/2 w-[80%] max-w-lg z-50
+        transition-all duration-300 ease-in-out backdrop-blur-sm
+        ${mounted && !closing ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-5"}
+      `}
+    >
+      <div className="flex items-center bg-background text-foreground border border-border rounded-full px-4 py-2 shadow-md">
+        <Search className="size-5 mr-2 text-muted-foreground" />
+        <input
+          ref={inputRef}
+          type="text"
+          placeholder="Search quotes..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="bg-transparent outline-none w-full text-base"
+        />
+      </div>
+
+      {query.trim() && filtered.length > 0 && (
+        <div className="mt-2 rounded-lg border border-border bg-background shadow-md max-h-60 overflow-y-auto">
+          {filtered.map((quote) => (
+            <button
+              key={quote.index}
+              onClick={() => {
+                onSelectQuote(quote.index);
+                setClosing(true);
+              }}
+              className="w-full text-left px-4 py-2 hover:bg-muted transition-colors"
+            >
+              <p className="text-sm text-foreground line-clamp-2">
+                {quote.text}
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">– {quote.author}</p>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {query.trim() && filtered.length === 0 && (
+        <div className="mt-2 px-4 py-2 text-sm text-muted-foreground bg-background border border-border rounded-lg shadow-sm">
+          No quotes found.
+        </div>
+      )}
+    </div>
+  );
+}
