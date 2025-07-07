@@ -5,13 +5,13 @@ import QuoteControls from "@/components/quoteControls/quoteControl";
 import quotes from "@/data/quotes";
 import { Tooltip, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import { useState, useEffect, useCallback } from "react";
-import { HelpCircle, Help } from "lucide-react";
 import ShortcutsPopup from "@/components/shortcutsPopup/shortcutsPopup";
 import { TooltipTrigger } from "@radix-ui/react-tooltip";
 
 export default function Home() {
   const [quoteIndex, setQuoteIndex] = useState(0);
   const [showShortcuts, setShowShortcuts] = useState(false);
+  const [theme, setTheme] = useState("light");
 
   const nextQuote = useCallback(() => {
     if (quoteIndex + 1 <= quotes.length - 1) {
@@ -52,13 +52,23 @@ export default function Home() {
           setShowShortcuts((prev) => !prev);
         }
       } else if (e.key.toLowerCase() === "r"){
-        randomQuote();
+        const tag = document.activeElement?.tagName.toLowerCase();
+
+        if(tag !== "input" && tag !== "textarea"){
+          randomQuote();
+        }
       }
     }
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [nextQuote, prevQuote, randomQuote]);
+
+  useEffect(() => {
+    document.body.classList.remove("light", "dark", "pastel", "sunset", "forest", "ocean", "midnight");
+    document.body.classList.add(theme);
+  }, [theme]);
+
 
   return (
     <TooltipProvider delayDuration={1000}>
@@ -69,6 +79,8 @@ export default function Home() {
           nextQuote={nextQuote}
           setQuoteIndex={setQuoteIndex}
           randomQuote={randomQuote}
+          theme={theme}
+          setTheme={setTheme}
         />
 
         <Tooltip>

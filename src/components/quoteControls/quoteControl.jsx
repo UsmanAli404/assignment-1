@@ -1,12 +1,14 @@
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, Search, ChevronRight, Shuffle } from "lucide-react";
+import { ChevronLeft, Search, ChevronRight, Shuffle, Check } from "lucide-react";
 import SearchBar from "@/components/searchBar/searchBar";
 import { useState } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useEffect } from "react";
+import ThemePickerPopup from "../themePickerPopup/themePickerPopup";
 
-export default function QuoteControls({ prevQuote, nextQuote, setQuoteIndex, randomQuote }) {
+export default function QuoteControls({ prevQuote, nextQuote, setQuoteIndex, randomQuote, theme, setTheme }) {
     const [showSearch, setShowSearch] = useState(false);
+    const [showThemePicker, setShowThemePicker] = useState(false);
 
     useEffect(() => {
         const handleKeyDown = (e) => {
@@ -27,15 +29,27 @@ export default function QuoteControls({ prevQuote, nextQuote, setQuoteIndex, ran
     return (
         <>
             {showSearch && <SearchBar onClose={() => setShowSearch(false)} onSelectQuote={(index)=>{setQuoteIndex(index); setShowSearch(false)}} />}
+            {showThemePicker && <ThemePickerPopup currentTheme={theme} onThemeSelect={setTheme} onClose={() => setShowThemePicker(false)} />}
 
             <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-2 shadow-md bg-background py-[5px] px-[5px] rounded-full border border-border z-40">
+
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button variant="outline" size="icon" className="rounded-full border-3" onClick={() => setShowThemePicker(true)}>
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="z-50">
+                        <p>Select Theme</p>
+                    </TooltipContent>
+                </Tooltip>
+                
                 <Tooltip>
                     <TooltipTrigger asChild>
                         <Button variant="ghost" size="icon" className="rounded-full" onClick={prevQuote}>
                             <ChevronLeft className="size-4" />
                         </Button>
                     </TooltipTrigger>
-                    <TooltipContent side="top" className="z-50 animate-slide-down-fade">
+                    <TooltipContent side="top" className="z-50">
                         <p>Previous Quote (←)</p>
                     </TooltipContent>
                 </Tooltip>
@@ -46,7 +60,7 @@ export default function QuoteControls({ prevQuote, nextQuote, setQuoteIndex, ran
                             <Search className="size-4" />
                         </Button>
                     </TooltipTrigger>
-                    <TooltipContent side="top" className="z-50 animate-slide-down-fade">
+                    <TooltipContent side="top" className="z-50">
                         <p>Search Quotes (S)</p>
                     </TooltipContent>
                 </Tooltip>
