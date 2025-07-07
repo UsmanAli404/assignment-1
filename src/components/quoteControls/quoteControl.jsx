@@ -5,10 +5,13 @@ import { useState } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useEffect } from "react";
 import ThemePickerPopup from "../themePickerPopup/themePickerPopup";
+import useIsDesktop from "@/utils/useIsDesktop";
+
 
 export default function QuoteControls({ prevQuote, nextQuote, setQuoteIndex, randomQuote, theme, setTheme }) {
     const [showSearch, setShowSearch] = useState(false);
     const [showThemePicker, setShowThemePicker] = useState(false);
+    const isDesktop = useIsDesktop();
 
     useEffect(() => {
         const handleKeyDown = (e) => {
@@ -33,59 +36,86 @@ export default function QuoteControls({ prevQuote, nextQuote, setQuoteIndex, ran
 
             <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-2 shadow-md bg-background py-[5px] px-[5px] rounded-full border border-border z-40">
 
+                {isDesktop ? (
                 <Tooltip>
                     <TooltipTrigger asChild>
-                        <Button variant="outline" size="icon" className="rounded-full border-3" onClick={() => setShowThemePicker(true)}>
-                        </Button>
+                    <Button variant="outline" size="icon" className="rounded-full border-3" onClick={() => setShowThemePicker(true)} />
                     </TooltipTrigger>
                     <TooltipContent side="top" className="z-50">
-                        <p>Select Theme</p>
+                    <p>Select Theme</p>
                     </TooltipContent>
                 </Tooltip>
-                
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <Button variant="ghost" size="icon" className="rounded-full" onClick={prevQuote}>
-                            <ChevronLeft className="size-4" />
-                        </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="top" className="z-50">
-                        <p>Previous Quote (←)</p>
-                    </TooltipContent>
-                </Tooltip>
+                ) : (
+                <Button variant="outline" size="icon" className="rounded-full border-3" onClick={() => setShowThemePicker(true)} />
+                )}
 
+                {isDesktop ? (
                 <Tooltip>
                     <TooltipTrigger asChild>
-                        <Button variant="ghost" size="icon" className="rounded-full" onClick={() => setShowSearch(true)}>
-                            <Search className="size-4" />
-                        </Button>
+                    <Button variant="ghost" size="icon" className="rounded-full" onClick={prevQuote}>
+                        <ChevronLeft className="size-4" />
+                    </Button>
                     </TooltipTrigger>
                     <TooltipContent side="top" className="z-50">
-                        <p>Search Quotes (S)</p>
+                    <p>Previous Quote (←)</p>
                     </TooltipContent>
                 </Tooltip>
-                
+                ) : (
+                <Button variant="ghost" size="icon" className="rounded-full" onClick={prevQuote}>
+                    <ChevronLeft className="size-4" />
+                </Button>
+                )}
+
+                {isDesktop ? (
                 <Tooltip>
                     <TooltipTrigger asChild>
-                        <Button variant="ghost" size="icon" className="rounded-full" onClick={nextQuote}>
-                            <ChevronRight className="size-4" />
-                        </Button>
+                    <Button variant="ghost" size="icon" className="rounded-full" onClick={() => setShowSearch(true)}>
+                        <Search className="size-4" />
+                    </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="z-50">
+                    <p>Search Quotes (S)</p>
+                    </TooltipContent>
+                </Tooltip>
+                ) : (
+                <Button variant="ghost" size="icon" className="rounded-full" onClick={() => setShowSearch(true)}>
+                    <Search className="size-4" />
+                </Button>
+                )}
+
+                {isDesktop ? (
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon" className="rounded-full" onClick={nextQuote}>
+                        <ChevronRight className="size-4" />
+                    </Button>
                     </TooltipTrigger>
                     <TooltipContent side="top">
-                        <p>Next Quote (→)</p>
+                    <p>Next Quote (→)</p>
                     </TooltipContent>
                 </Tooltip>
+                ) : (
+                <Button variant="ghost" size="icon" className="rounded-full" onClick={nextQuote}>
+                    <ChevronRight className="size-4" />
+                </Button>
+                )}
 
+                {isDesktop ? (
                 <Tooltip>
                     <TooltipTrigger asChild>
-                        <Button variant="ghost" size="icon" className="rounded-full" onClick={randomQuote}>
-                            <Shuffle className="size-4" />
-                        </Button>
+                    <Button variant="ghost" size="icon" className="rounded-full" onClick={randomQuote}>
+                        <Shuffle className="size-4" />
+                    </Button>
                     </TooltipTrigger>
                     <TooltipContent side="top">
-                        <p>Random Quote (R)</p>
+                    <p>Random Quote (R)</p>
                     </TooltipContent>
                 </Tooltip>
+                ) : (
+                <Button variant="ghost" size="icon" className="rounded-full" onClick={randomQuote}>
+                    <Shuffle className="size-4" />
+                </Button>
+                )}
             </div>
         </>
     );
