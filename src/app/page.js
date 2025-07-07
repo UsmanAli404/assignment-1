@@ -65,7 +65,7 @@ export default function Home() {
   }, [nextQuote, prevQuote, randomQuote]);
 
   useEffect(() => {
-    document.body.classList.remove("light", "dark", "pastel", "sunset", "forest", "ocean", "midnight");
+    document.body.classList.remove("light", "dark", "sunset", "forest", "ocean", "midnight", "red", "yellow");
     document.body.classList.add(theme);
   }, [theme]);
 

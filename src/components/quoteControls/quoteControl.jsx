@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, Search, ChevronRight, Shuffle, Check } from "lucide-react";
 import SearchBar from "@/components/searchBar/searchBar";
@@ -39,14 +41,14 @@ export default function QuoteControls({ prevQuote, nextQuote, setQuoteIndex, ran
                 {isDesktop ? (
                 <Tooltip>
                     <TooltipTrigger asChild>
-                    <Button variant="outline" size="icon" className="rounded-full border-3" onClick={() => setShowThemePicker(true)} />
+                    <Button variant="outline" size="icon" className="rounded-full" onClick={() => setShowThemePicker(true)} />
                     </TooltipTrigger>
                     <TooltipContent side="top" className="z-50">
                     <p>Select Theme</p>
                     </TooltipContent>
                 </Tooltip>
                 ) : (
-                <Button variant="outline" size="icon" className="rounded-full border-3" onClick={() => setShowThemePicker(true)} />
+                <Button variant="outline" size="icon" className="rounded-full" onClick={() => setShowThemePicker(true)} />
                 )}
 
                 {isDesktop ? (

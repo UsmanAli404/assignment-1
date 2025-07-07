@@ -6,11 +6,12 @@ import { Check, X } from "lucide-react";
 const themes = [
   { name: "light", color: "bg-white" },
   { name: "dark", color: "bg-neutral-800" },
-  { name: "pastel", color: "bg-pink-200" },
   { name: "sunset", color: "bg-orange-400" },
   { name: "forest", color: "bg-green-500" },
   { name: "ocean", color: "bg-blue-500" },
   { name: "midnight", color: "bg-indigo-900" },
+  { name: "red", color: "bg-red-500"},
+  { name: "yellow", color: "bg-yellow-400"},
 ];
 
 export default function ThemePickerPopup({ onClose, currentTheme, onThemeSelect }) {
