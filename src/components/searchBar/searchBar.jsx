@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Search } from "lucide-react";
 import quotes from "@/data/quotes";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function SearchBar({ onClose, onSelectQuote }) {
   const inputRef = useRef(null);
@@ -58,23 +59,23 @@ export default function SearchBar({ onClose, onSelectQuote }) {
       </div>
 
       {query.trim() && filtered.length > 0 && (
-        <div className="mt-2 rounded-lg border border-border bg-background shadow-md max-h-60 overflow-y-auto">
-          {filtered.map((quote) => (
-            <button
-              key={quote.index}
-              onClick={() => {
-                onSelectQuote(quote.index);
-                setClosing(true);
-              }}
-              className="w-full text-left px-4 py-2 hover:bg-muted transition-colors"
-            >
-              <p className="text-sm text-foreground line-clamp-2">
-                {quote.text}
-              </p>
-              <p className="text-xs text-muted-foreground mt-1">– {quote.author}</p>
-            </button>
-          ))}
-        </div>
+        <ScrollArea className="mt-2 h-60 rounded-lg border border-border bg-background shadow-md">
+          <div className="space-y-1 px-2 py-2">
+            {filtered.map((quote) => (
+              <button
+                key={quote.index}
+                onClick={() => {
+                  onSelectQuote(quote.index);
+                  setClosing(true);
+                }}
+                className="w-full text-left px-4 py-2 hover:bg-muted transition-colors"
+              >
+                <p className="text-sm text-foreground line-clamp-2">{quote.text}</p>
+                <p className="text-xs text-muted-foreground mt-1">– {quote.author}</p>
+              </button>
+            ))}
+          </div>
+        </ScrollArea>
       )}
 
       {query.trim() && filtered.length === 0 && (
