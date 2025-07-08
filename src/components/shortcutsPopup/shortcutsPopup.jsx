@@ -62,7 +62,15 @@ export default function ShortcutsPopup({ onClose }) {
             <span className="text-muted-foreground">S</span>
           </li>
           <li className="flex justify-between border-b pb-3">
-            <span>Hide Searchbar</span>
+            <span>Show Theme Picker</span>
+            <span className="text-muted-foreground">T</span>
+          </li>
+          <li className="flex justify-between border-b pb-3">
+            <span>Show Music Picker</span>
+            <span className="text-muted-foreground">M</span>
+          </li>
+          <li className="flex justify-between border-b pb-3">
+            <span>Hide Searchbar and Popups</span>
             <span className="text-muted-foreground">Esc</span>
           </li>
           <li className="flex justify-between border-b pb-3">

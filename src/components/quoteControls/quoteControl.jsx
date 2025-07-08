@@ -11,7 +11,7 @@ import useIsDesktop from "@/utils/useIsDesktop";
 import MusicPickerPopup from "../musicPicker/musicPickerPopup";
 import AddQuotePopup from "../addQuotePopup/addQuotePopup";
 
-export default function QuoteControls({ prevQuote, nextQuote, setQuoteIndex, randomQuote, theme, setTheme }) {
+export default function QuoteControls({ quotes, prevQuote, nextQuote, setQuoteIndex, randomQuote, theme, setTheme, addQuote }) {
     const [showSearch, setShowSearch] = useState(false);
     const [showThemePicker, setShowThemePicker] = useState(false);
     const isDesktop = useIsDesktop();
@@ -27,18 +27,27 @@ export default function QuoteControls({ prevQuote, nextQuote, setQuoteIndex, ran
             if (e.key.toLowerCase() === "s" && tag !== "input" && tag !== "textarea") {
                 e.preventDefault();
                 setShowSearch(true);
-            } else if (e.key === "Escape" && showSearch) {
-                setShowSearch(false);
+            } else if (e.key.toLowerCase() === "t" && tag !== "input" && tag !== "textarea") {
+                e.preventDefault();
+                setShowThemePicker(true);
+            } else if (e.key.toLowerCase() === "m" && tag !== "input" && tag !== "textarea") {
+                e.preventDefault();
+                setShowMusicPicker(true);
+            } else if (e.key === "Escape") {
+                if (showSearch) setShowSearch(false);
+                if (showMusicPicker) setShowMusicPicker(false);
+                if (showThemePicker) setShowThemePicker(false);
+                if (showAddQuote) setShowAddQuote(false);
             }
         };
 
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [showSearch]);
+    }, [showSearch, showMusicPicker, showThemePicker, showAddQuote]);
 
     return (
         <>
-            {showSearch && <SearchBar onClose={() => setShowSearch(false)} onSelectQuote={(index)=>{setQuoteIndex(index); setShowSearch(false)}} setShowAddQuote={setShowAddQuote} />}
+            {showSearch && <SearchBar quotes={quotes} onClose={() => setShowSearch(false)} onSelectQuote={(index)=>{setQuoteIndex(index); setShowSearch(false)}} setShowAddQuote={setShowAddQuote} />}
             {showThemePicker && <ThemePickerPopup currentTheme={theme} onThemeSelect={setTheme} onClose={() => setShowThemePicker(false)} />}
             {showMusicPicker && (
                 <MusicPickerPopup
@@ -53,7 +62,7 @@ export default function QuoteControls({ prevQuote, nextQuote, setQuoteIndex, ran
                 <AddQuotePopup
                 onClose={() => setShowAddQuote(false)}
                 onSubmit={(newQuote) => {
-                    console.log("New quote:", newQuote);
+                    addQuote(newQuote);
                 }}
                 />
             )}
@@ -66,7 +75,7 @@ export default function QuoteControls({ prevQuote, nextQuote, setQuoteIndex, ran
                     <Button variant="outline" size="icon" className="rounded-full" onClick={() => setShowThemePicker(true)} />
                     </TooltipTrigger>
                     <TooltipContent side="top" className="z-50">
-                    <p>Select Theme</p>
+                    <p>Select Theme (T)</p>
                     </TooltipContent>
                 </Tooltip>
                 ) : (
@@ -163,7 +172,7 @@ export default function QuoteControls({ prevQuote, nextQuote, setQuoteIndex, ran
                         </Button>
                         </TooltipTrigger>
                         <TooltipContent side="top">
-                        <p>Select Music</p>
+                        <p>Select Music (M)</p>
                         </TooltipContent>
                     </Tooltip>
                     ) : (

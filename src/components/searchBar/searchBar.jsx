@@ -1,15 +1,23 @@
 import { useEffect, useRef, useState } from "react";
-import { Search } from "lucide-react";
-import quotes from "@/data/quotes";
+import { Search, Filter } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import { Button } from "../ui/button";
 
-export default function SearchBar({ onClose, onSelectQuote, setShowAddQuote }) {
+export default function SearchBar({ onClose, onSelectQuote, setShowAddQuote, quotes }) {
   const inputRef = useRef(null);
   const containerRef = useRef(null);
   const [mounted, setMounted] = useState(false);
   const [closing, setClosing] = useState(false);
   const [query, setQuery] = useState("");
+  const [filterBy, setFilterBy] = useState("all");
+  const [showFilterOptions, setShowFilterOptions] = useState(false);
+
 
   useEffect(() => {
     const timeout = setTimeout(() => setMounted(true), 10);
@@ -19,10 +27,14 @@ export default function SearchBar({ onClose, onSelectQuote, setShowAddQuote }) {
 
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (!containerRef.current?.contains(e.target)) {
+      const dropdown = document.querySelector("[data-radix-popper-content-wrapper]");
+      const isInsideDropdown = dropdown?.contains(e.target);
+
+      if (!containerRef.current?.contains(e.target) && !isInsideDropdown) {
         setClosing(true);
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
@@ -35,8 +47,32 @@ export default function SearchBar({ onClose, onSelectQuote, setShowAddQuote }) {
   }, [closing, onClose]);
 
   const filtered = quotes
-    .map((q, i) => ({ ...q, index: i }))
-    .filter((q) => q.text.toLowerCase().includes(query.toLowerCase()));
+  .map((q, i) => ({ ...q, index: i }))
+  .filter((q) => {
+    const qLower = query.toLowerCase();
+
+    const safeTags = Array.isArray(q.tags) ? q.tags : [];
+
+    if (filterBy === "all") {
+      return (
+        q.text.toLowerCase().includes(qLower) ||
+        q.author.toLowerCase().includes(qLower) ||
+        safeTags.some(tag => tag?.toLowerCase().includes(qLower))
+      );
+    }
+
+    if (filterBy === "author") {
+      return q.author.toLowerCase().includes(qLower);
+    }
+
+    if (filterBy === "topic") {
+      return safeTags.some(tag => tag?.toLowerCase().includes(qLower))
+    }
+
+    return false;
+  });
+
+  const isFilterDisabled = query.trim() !== "";
 
   return (
     <>
@@ -52,17 +88,53 @@ export default function SearchBar({ onClose, onSelectQuote, setShowAddQuote }) {
         ${mounted && !closing ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-5"}
       `}
     >
-      <div className="flex items-center bg-background text-foreground border border-border rounded-full px-4 py-2 shadow-md">
+      <div className="flex items-center bg-background text-foreground border border-border rounded-full px-4 py-2 shadow-md relative">
         <Search className="size-5 mr-2 text-muted-foreground" />
+
         <input
           ref={inputRef}
           type="text"
-          placeholder="Search quotes..."
+          placeholder={`Search quotes${filterBy === "all" ? "" : ` by ${filterBy}`}`}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="bg-transparent outline-none w-full text-base"
         />
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="ml-2 p-1 text-muted-foreground hover:text-foreground"
+              title="Filter"
+              disabled={isFilterDisabled}
+            >
+              <Filter className="size-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" side="bottom" className={`mt-4`}>
+            <DropdownMenuItem
+              onClick={() => setFilterBy("all")}
+              className={filterBy === "all" ? "font-medium bg-muted/50" : ""}
+            >
+              Search All
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => setFilterBy("author")}
+              className={filterBy === "author" ? "font-medium bg-muted/50" : ""}
+            >
+              Search by Author
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => setFilterBy("topic")}
+              className={filterBy === "topic" ? "font-medium bg-muted/50" : ""}
+            >
+              Search by Topic
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
+
 
       {query.trim() && filtered.length > 0 && (
         <ScrollArea className="mt-2 h-60 rounded-lg border border-border bg-background shadow-md">

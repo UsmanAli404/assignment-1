@@ -45,8 +45,17 @@ export default function AddQuotePopup({ onClose, onSubmit }) {
 
   const handleSubmit = () => {
     if (quote.trim() && author.trim()) {
-      onSubmit({ text: quote.trim(), author: author.trim(), topic: topic.trim() });
-      initiateClose();
+        onSubmit({
+            text: quote.trim(),
+            author: author.trim(),
+            tags: [...new Set(
+                topic
+                .split(",")
+                .map(t => t.trim().toLowerCase())
+                .filter(t => t.length > 0)
+            )],
+        });
+        initiateClose();
     }
   };
 
@@ -95,7 +104,7 @@ export default function AddQuotePopup({ onClose, onSubmit }) {
         <Input
           value={topic}
           onChange={(e) => setTopic(e.target.value)}
-          placeholder="Topic"
+          placeholder="One or more comma-separated Topic(s)"
         />
 
         <div className="flex">
