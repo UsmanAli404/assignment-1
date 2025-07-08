@@ -16,7 +16,7 @@ export default function QuoteControls({ quotes, prevQuote, nextQuote, setQuoteIn
     const [showThemePicker, setShowThemePicker] = useState(false);
     const isDesktop = useIsDesktop();
     const [showMusicPicker, setShowMusicPicker] = useState(false);
-    const [currentTrack, setCurrentTrack] = useState("Calm Breeze");
+    const [currentTrack, setCurrentTrack] = useState("Emotional Ethnic Music");
     const audioRef = useRef(null);
     const [showAddQuote, setShowAddQuote] = useState(false);
 
@@ -44,6 +44,24 @@ export default function QuoteControls({ quotes, prevQuote, nextQuote, setQuoteIn
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, [showSearch, showMusicPicker, showThemePicker, showAddQuote]);
+
+    useEffect(() => {
+        if (!audioRef.current) return;
+
+        const defaultTrack = "/music/Yugen-Emotional-Ethnic-Music(chosic.com).mp3";
+        const isAlreadySet = audioRef.current.src?.includes(defaultTrack);
+
+        if (!isAlreadySet) {
+            audioRef.current.src = defaultTrack;
+
+            const playPromise = audioRef.current.play();
+            if (playPromise !== undefined) {
+                playPromise.catch((err) => {
+                    console.warn("Autoplay failed:", err.message);
+                });
+            }
+        }
+    }, []);
 
     return (
         <>

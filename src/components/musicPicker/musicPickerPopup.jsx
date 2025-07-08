@@ -18,7 +18,7 @@ export default function MusicPickerPopup({ onClose, currentTrack, onTrackSelect,
   const [mounted, setMounted] = useState(false);
   const [closing, setClosing] = useState(false);
   const [playingTrack, setPlayingTrack] = useState(currentTrack);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
 
   useEffect(() => {
     const timer = setTimeout(() => setMounted(true), 10);
