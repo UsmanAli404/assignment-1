@@ -94,7 +94,7 @@ export default function SearchBar({ onClose, onSelectQuote, setShowAddQuote, quo
         <input
           ref={inputRef}
           type="text"
-          placeholder={`Search quotes${filterBy === "all" ? "" : ` by ${filterBy}`}`}
+          placeholder={`Search quotes${filterBy === "all" ? "..." : ` by ${filterBy}...`}`}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="bg-transparent outline-none w-full text-base"
@@ -105,7 +105,7 @@ export default function SearchBar({ onClose, onSelectQuote, setShowAddQuote, quo
             <Button
               variant="ghost"
               size="icon"
-              className="ml-2 p-1 text-muted-foreground hover:text-foreground"
+              className="ml-2 p-1 rounded-full text-muted-foreground hover:text-foreground"
               title="Filter"
               disabled={isFilterDisabled}
             >
