@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { Search } from "lucide-react";
 import quotes from "@/data/quotes";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "../ui/button";
 
-export default function SearchBar({ onClose, onSelectQuote }) {
+export default function SearchBar({ onClose, onSelectQuote, setShowAddQuote }) {
   const inputRef = useRef(null);
   const containerRef = useRef(null);
   const [mounted, setMounted] = useState(false);
@@ -38,10 +39,15 @@ export default function SearchBar({ onClose, onSelectQuote }) {
     .filter((q) => q.text.toLowerCase().includes(query.toLowerCase()));
 
   return (
+    <>
+    {query.trim() && (
+      <div className="fixed inset-0 z-[52] backdrop-blur-sm transition duration-200 bg-black/10" />
+    )}
+
     <div
       ref={containerRef}
       className={`
-        fixed top-6 left-1/2 -translate-x-1/2 w-[80%] max-w-lg z-50
+        fixed top-6 left-1/2 -translate-x-1/2 w-[80%] max-w-lg z-[55]
         transition-all duration-300 ease-in-out backdrop-blur-sm
         ${mounted && !closing ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-5"}
       `}
@@ -79,10 +85,28 @@ export default function SearchBar({ onClose, onSelectQuote }) {
       )}
 
       {query.trim() && filtered.length === 0 && (
-        <div className="mt-2 px-4 py-2 text-sm text-muted-foreground bg-background border border-border rounded-lg shadow-sm">
-          No quotes found.
+        <div className="mt-2 p-4 text-sm text-muted-foreground bg-background border border-border rounded-lg shadow-sm space-y-4">
+          <p>No quotes found.</p>
+
+          <div className="border-t border-border pt-4 space-y-2">
+            <h4 className="text-xs font-medium uppercase text-muted-foreground tracking-wide">
+              Add a Quote
+            </h4>
+            <Button
+              variant=""
+              onClick={() => {
+                onClose();
+                setTimeout(() => setShowAddQuote(true), 100);
+              }}
+              className="mt-2 w-full text-2xl"
+            >
+              +
+            </Button>
+          </div>
         </div>
       )}
+
     </div>
+    </>
   );
 }

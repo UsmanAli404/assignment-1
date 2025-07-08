@@ -87,7 +87,7 @@ export default function Home() {
           <TooltipTrigger asChild>
             <button
               onClick={() => setShowShortcuts((prev) => !prev)}
-              className="hidden md:flex fixed top-6 right-4 items-center justify-center w-10 h-10 bg-background border border-border text-foreground rounded-full shadow-md z-50 hover:bg-muted transition text-lg"
+              className="hidden md:flex fixed top-6 right-4 items-center justify-center w-10 h-10 bg-background border border-border text-foreground rounded-full shadow-md z-40 hover:bg-muted transition text-lg"
               aria-label="Toggle Shortcuts"
             >
               ?

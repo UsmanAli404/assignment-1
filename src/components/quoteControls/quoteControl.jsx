@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import ThemePickerPopup from "../themePickerPopup/themePickerPopup";
 import useIsDesktop from "@/utils/useIsDesktop";
 import MusicPickerPopup from "../musicPicker/musicPickerPopup";
+import AddQuotePopup from "../addQuotePopup/addQuotePopup";
 
 export default function QuoteControls({ prevQuote, nextQuote, setQuoteIndex, randomQuote, theme, setTheme }) {
     const [showSearch, setShowSearch] = useState(false);
@@ -17,6 +18,7 @@ export default function QuoteControls({ prevQuote, nextQuote, setQuoteIndex, ran
     const [showMusicPicker, setShowMusicPicker] = useState(false);
     const [currentTrack, setCurrentTrack] = useState("Calm Breeze");
     const audioRef = useRef(null);
+    const [showAddQuote, setShowAddQuote] = useState(false);
 
     useEffect(() => {
         const handleKeyDown = (e) => {
@@ -36,7 +38,7 @@ export default function QuoteControls({ prevQuote, nextQuote, setQuoteIndex, ran
 
     return (
         <>
-            {showSearch && <SearchBar onClose={() => setShowSearch(false)} onSelectQuote={(index)=>{setQuoteIndex(index); setShowSearch(false)}} />}
+            {showSearch && <SearchBar onClose={() => setShowSearch(false)} onSelectQuote={(index)=>{setQuoteIndex(index); setShowSearch(false)}} setShowAddQuote={setShowAddQuote} />}
             {showThemePicker && <ThemePickerPopup currentTheme={theme} onThemeSelect={setTheme} onClose={() => setShowThemePicker(false)} />}
             {showMusicPicker && (
                 <MusicPickerPopup
@@ -46,7 +48,15 @@ export default function QuoteControls({ prevQuote, nextQuote, setQuoteIndex, ran
                     audioRef={audioRef}
                 />
             )}
-            <audio ref={audioRef} hidden preload="auto" />
+            <audio ref={audioRef} hidden preload="auto" loop/>
+            {showAddQuote && (
+                <AddQuotePopup
+                onClose={() => setShowAddQuote(false)}
+                onSubmit={(newQuote) => {
+                    console.log("New quote:", newQuote);
+                }}
+                />
+            )}
 
             <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-2 shadow-md bg-background py-[5px] px-[5px] rounded-full border border-border z-40">
 
@@ -135,12 +145,21 @@ export default function QuoteControls({ prevQuote, nextQuote, setQuoteIndex, ran
                     <Tooltip>
                         <TooltipTrigger asChild>
                         <Button
-                            variant="ghost"
+                            variant={`${audioRef.current?.paused ? "ghost" : "outline"}`}
                             size="icon"
-                            className="rounded-full"
+                            className="rounded-full relative"
                             onClick={()=>setShowMusicPicker(true)}
                         >
-                            <Music2 className="size-4" />
+                            <Music2
+                                className={`
+                                size-4 transition-transform 
+                                ${audioRef.current?.paused ? "" : "animate-spin"}
+                                `}
+                                style={{
+                                animationDuration: "6s",
+                                animationTimingFunction: "linear",
+                                }}
+                            />
                         </Button>
                         </TooltipTrigger>
                         <TooltipContent side="top">
@@ -149,12 +168,21 @@ export default function QuoteControls({ prevQuote, nextQuote, setQuoteIndex, ran
                     </Tooltip>
                     ) : (
                     <Button
-                        variant="ghost"
+                        variant={`${audioRef.current?.paused ? "ghost" : "outline"}`}
                         size="icon"
                         className="rounded-full"
                         onClick={()=>setShowMusicPicker(true)}
                     >
-                        <Music2 className="size-4" />
+                        <Music2
+                            className={`
+                            size-4 transition-transform 
+                            ${audioRef.current?.paused ? "" : "animate-spin"}
+                            `}
+                            style={{
+                            animationDuration: "6s",
+                            animationTimingFunction: "linear",
+                            }}
+                        />
                     </Button>
                 )}
             </div>

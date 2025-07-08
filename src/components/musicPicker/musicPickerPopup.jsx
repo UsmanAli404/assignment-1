@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Check, X, Play, Pause } from "lucide-react";
+import { X, Play, Pause } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 const tracks = [
