@@ -85,7 +85,7 @@ export default function QuoteControls({ quotes, prevQuote, nextQuote, setQuoteIn
                 />
             )}
 
-            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-2 shadow-md bg-background py-[5px] px-[5px] rounded-full border border-border z-40">
+            <div className="fixed bottom-7 md:bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-2 shadow-md bg-background py-[5px] px-[5px] rounded-full border border-border z-40">
 
                 {isDesktop ? (
                 <Tooltip>
